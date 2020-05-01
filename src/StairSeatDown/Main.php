@@ -1,5 +1,7 @@
 <?php
+
 namespace StairSeatDown;
+
 use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -8,20 +10,22 @@ use pocketmine\block\Stair;
 use pocketmine\entity\Entity;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\utils\Config;
-use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\PlayerActionPacket;
-use pocketmine\network\mcpe\protocol\RemoveEntityPacket;
+use pocketmine\network\mcpe\protocol\RemoveActorPacket;
 use pocketmine\Server;
 use pocketmine\network\mcpe\protocol\types\EntityLink;
+
 class Main extends PluginBase implements Listener {
+
 	public function onEnable() {
 		$PluginName = "StairSeatDown";
 		$version = "1.0.0";
     		$this->getServer()->getPluginManager()->registerEvents($this, $this);
     		$this->getlogger()->info($PluginName."Version:".$version."を読み込みました。作者:gamesukimanIRS, maru");
     		$this->getlogger()->warning("このプラグインはLGPLライセンスにより配布されています。");
-		$this->getLogger()->notice("このプラグインのコードの元はPmChairより引用しています。");
+		    $this->getLogger()->notice("このプラグインのコードの元はPmChairより引用しています。");
     		$this->getlogger()->info("このプラグインを使用する際はどこかにプラグイン名「".$PluginName."」と作者名「gamesukimanIRS, maru」を記載する事を推奨します。");
 		if(!file_exists($this->getDataFolder())){
          		mkdir($this->getDataFolder(), 0756, true);
@@ -72,6 +76,7 @@ class Main extends PluginBase implements Listener {
 			}
 		}
 	}
+
 	public function SeatDown($player, $stair){
 		$sx = intval($stair->getX());
 		$sy = intval($stair->getY());
@@ -79,7 +84,7 @@ class Main extends PluginBase implements Listener {
 		$nx = $sx + 0.5;
 		$ny = $sy + 1.5;
 		$nz = $sz + 0.5;
-		$pk = new AddEntityPacket();
+		$pk = new AddActorPacket();
 		$entityRuntimeId = $player->getId() + 10000;
 		$this->onChair[$player->getName()] = $entityRuntimeId;
 		$pk->entityRuntimeId = $entityRuntimeId;
@@ -96,11 +101,13 @@ class Main extends PluginBase implements Listener {
 		Server::getInstance()->broadcastPacket(Server::getInstance()->getOnlinePlayers(), $pk);
 		$player->sendPopup($this->get("seat-down"));
 	}
+
 	public function StandUp($player){
-		$removepk = new RemoveEntityPacket();
+		$removepk = new RemoveActorPacket();
 		$removepk->entityUniqueId = $this->onChair [$player->getName ()];
 		Server::getInstance()->broadcastPacket ( Server::getInstance()->getOnlinePlayers (), $removepk );
 	}
+
 	public function onJump(DataPacketReceiveEvent $event) {
 		$packet = $event->getPacket ();
 		if ($packet instanceof PlayerActionPacket) {
@@ -112,6 +119,7 @@ class Main extends PluginBase implements Listener {
 			}
 		}
 	}
+
 	public function onQuit(PlayerQuitEvent $event) {
 		$player = $event->getPlayer ();
 		if (isset ( $this->onChair [$player->getName ()] )) {
