@@ -88,7 +88,7 @@ class Main extends PluginBase implements Listener {
 		$entityRuntimeId = $player->getId() + 10000;
 		$this->onChair[$player->getName()] = $entityRuntimeId;
 		$pk->entityRuntimeId = $entityRuntimeId;
-		$pk->type = 84;
+		$pk->type = AddActorPacket::LEGACY_ID_MAP_BC[84];
 		$pk->position = new Vector3($nx, $ny, $nz);
 		$pk->motion = new Vector3(0,0,0);
 		$flags = (
