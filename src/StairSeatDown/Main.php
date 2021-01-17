@@ -97,7 +97,7 @@ class Main extends PluginBase implements Listener {
  		$pk->metadata = [
  			Entity::DATA_FLAGS => [Entity::DATA_TYPE_LONG, $flags],
  		];
-		$pk->links[] = new EntityLink($pk->entityRuntimeId,$player->getId(),2,false);
+		$pk->links[] = new EntityLink($pk->entityRuntimeId,$player->getId(),2,false,false);
 		Server::getInstance()->broadcastPacket(Server::getInstance()->getOnlinePlayers(), $pk);
 		$player->sendPopup($this->get("seat-down"));
 	}
